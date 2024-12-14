@@ -24,6 +24,8 @@
       url = "github:Cryolitia/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
@@ -31,9 +33,10 @@
       self,
       nixpkgs,
       nur-cryolitia,
+      flake-utils,
     }:
-    rec {
-      pkgs = import nixpkgs { system = "x86_64-linux"; };
+    flake-utils.lib.eachDefaultSystem (system: rec {
+      pkgs = import nixpkgs { inherit system; };
 
       fonts-version = {
         source-han-serif = {
@@ -70,12 +73,12 @@
           })
         ) fonts-version;
 
-      packages.x86_64-linux = {
-        cn-font-split = nur-cryolitia.packages.x86_64-linux.cn-font-split;
+      packages = {
+        cn-font-split = nur-cryolitia.packages.${system}.cn-font-split;
         default =
           let
             pkgs = import nixpkgs {
-              system = "x86_64-linux";
+              inherit system;
               overlays = [
                 (final: prev: {
                   cn-font-split = nur-cryolitia.packages."${prev.system}".cn-font-split;
@@ -183,5 +186,5 @@
             }
           ) { };
       };
-    };
+    });
 }
