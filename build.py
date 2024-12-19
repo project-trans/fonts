@@ -53,7 +53,7 @@ def process(dir):
         weight = weight_map[weight_name]
         print(f"{{ name = {name}\tweight = {weight}\n }}")
         os.system(
-            f"cn-font-split -i {item.path} --font-weight {weight} --out-dir ./result/{name}"
+            f"cn-font-split -i {item.path} --font-family {name.split("-")[0]} --font-weight {weight} --out-dir ./result/{name}"
         )
         paths.append(name)
     return paths

@@ -1,11 +1,86 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>字体库</title>
-</head>
-<body>
-    <h1>欢迎来到 Project Trans 的字体库</h1>
-</body>
+  </head>
+  <body>
+    <main>
+      <h1>欢迎来到 Project Trans 的字体库</h1>
+      <label>
+        选择字体
+        <select id="select"></select>
+      </label>
+      <label>
+        选择字重 <span id="fontWeight">400</span>
+        <input
+          id="fontWeightSelector"
+          type="range"
+          min="100"
+          max="900"
+          step="100"
+          value="400"
+        />
+      </label>
+      <p>The quick brown fox jumps over the lazy dog.</p>
+      <p>
+        这可以有，你们说的大量事实。那是在鸡……鸡蛋里头拣骨头，拣来拣去，说是抄他们家，打了我的旗号。是你们（今天）说的我才知道的。通过丑化我、丑化毛泽东主席、丑化亿万人民参加的无产阶级文化大革命啊。毛泽东主席的妻子，三十八年整啊！认识还不止，共患难了！战争的时候唯一留在前方追随毛泽东主席的，只有我一个女同志。你们躲到哪去了？！
+      </p>
+    </main>
+    <div id="linkContainer"></div>
+    <script async>
+      (async () => {
+        const fonts = await fetch("/path_map.json").then((res) => res.json());
+        const select = document.getElementById("select");
+        const fontWeightSelector =
+          document.getElementById("fontWeightSelector");
+        const linkContainer = document.getElementById("linkContainer");
+        const options = [`<option value="">请选择</option>`]
+          .concat(
+            Object.keys(fonts).map(
+              (name) => `<option value="${name}">${name}</option>`
+            )
+          )
+          .join("\n");
+        select.innerHTML = options;
+
+        select.addEventListener("change", () => {
+          if (!select.value) {
+            linkContainer.innerHTML = "";
+            return document.documentElement.style.removeProperty(
+              "--font-family"
+            );
+          }
+          document.documentElement.style.setProperty(
+            "--font-family",
+            fonts[select.value].fontFamily
+          );
+          const links = fonts[select.value].paths
+            .map(
+              (link) => `<link rel="stylesheet" href="/${link}/result.css" />`
+            )
+            .join("\n");
+          linkContainer.innerHTML = links;
+        });
+
+        fontWeightSelector.addEventListener("input", () => {
+          document.getElementById("fontWeight").textContent =
+            fontWeightSelector.value;
+          document.documentElement.style.setProperty(
+            "--font-weight",
+            fontWeightSelector.value
+          );
+        });
+      })();
+    </script>
+    <style>
+      main {
+        margin: auto;
+        max-width: 1080px;
+        font-family: var(--font-family, sans-serif);
+        font-weight: var(--font-weight, 400);
+      }
+    </style>
+  </body>
 </html>
