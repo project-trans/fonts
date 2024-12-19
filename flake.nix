@@ -51,7 +51,7 @@
           version = "1.211";
           version-in-nixpkgs = pkgs.lxgw-neoxihei.version;
         };
-        lxgw-weikai = {
+        lxgw-wenkai = {
           version = "1.501";
           version-in-nixpkgs = pkgs.lxgw-wenkai.version;
         };
@@ -121,7 +121,7 @@
                 hash = "sha256-w3Rk0NDYXPzzg1JGsC6zIvr0SiM3ZzHHW9NwHNAhnaM=";
               };
 
-              LxgwWenkai-version = fonts-version.lxgw-weikai.version;
+              LxgwWenkai-version = fonts-version.lxgw-wenkai.version;
               LxgwWenkai = fetchzip {
                 url = "https://github.com/lxgw/LxgwWenKai/releases/download/v${LxgwWenkai-version}/lxgw-wenkai-v${LxgwWenkai-version}.zip";
                 hash = "sha256-rpzrclb5w9MZonuHTcRxoPCUl2IQVAWWrBPVX6R7syQ=";
