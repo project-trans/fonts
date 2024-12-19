@@ -186,22 +186,5 @@
             }
           ) { };
       };
-
-      devShells.default =
-        let
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = [
-              (final: prev: {
-                cn-font-split = nur-cryolitia.packages."${prev.system}".cn-font-split;
-                fonts-version = fonts-version;
-              })
-            ];
-          };
-        in
-        with pkgs;
-        pkgs.mkShell {
-          buildInputs = [ cn-font-split ];
-        };
     });
 }
