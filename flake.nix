@@ -41,7 +41,7 @@
       fonts-version = {
         source-han-serif = {
           version = "2.003";
-          version-in-nixpkgs = pkgs.source-han-serif.version;
+          version-in-nixpkgs = pkgs.source-han-serif-vf-ttf.version;
         };
         sarasa-ui = {
           version = "1.0.25";
@@ -104,8 +104,8 @@
 
               source-han-serif-version = fonts-version.source-han-serif.version;
               source-han-serif = fetchzip {
-                url = "https://github.com/adobe-fonts/source-han-serif/releases/download/${source-han-serif-version}R/09_SourceHanSerifSC.zip";
-                hash = "sha256-j7RC3Fw4g+fW1YCno7ThT8cLViBWwBgJfzzio1H3H6k=";
+                url = "https://github.com/adobe-fonts/source-han-serif/releases/download/${source-han-serif-version}R/02_SourceHanSerif-VF.zip";
+                hash = "sha256-T+QBmS7sb8C/iTjtzTsPXcT5rQffcRxc91rV40UvZyA=";
                 stripRoot = false;
               };
 
@@ -173,7 +173,7 @@
 
                 mkdir $out
                 install -Dm 644 ${index-html} $out/index.html
-                cp -r ./result/* $out/
+                cp -r ./result/* $out
 
                 runHook postInstall
               '';
