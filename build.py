@@ -1,8 +1,9 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i python3 -p "python3.withPackages (ps: with ps; [ ])"
 
-import os
 import json
+import os
+import re
 
 weight_map = {
     "ExtraLight": 200,
@@ -58,22 +59,64 @@ def process(dir):
     return paths
 
 
+class FontMapItem:
+    fontFamily: str
+    paths: list[str]
+
+    def __init__(self, paths: list[str], font_family: str):
+        self.paths = paths
+        self.fontFamily = font_family
+
+
+class FontMapItemEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, FontMapItem):
+            return o.__dict__
+        return super().default(o)
+
+
 if __name__ == "__main__":
-    path_map: dict[str, list[str]] = {}
+    path_map: dict[str, FontMapItem] = {}
     for name, info in font_map.items():
         if info["type"] == "file":
+            outdir = f'./result/{info["name"]}'
             os.system(
-                f'cn-font-split -i {info["path"]} --font-weight "{info["weight"] if "weight" in info else "400"}" --out-dir ./result/{info["name"]}'
+                f'cn-font-split -i {info["path"]} --font-weight "{info["weight"] if "weight" in info else "400"}" --out-dir {outdir}'
             )
-            path_map[name] = [info["name"]]
+            css = open(f"{outdir}/result.css", "r", encoding="utf-8").read()
+            font_family = re.search(r"(?<=font-family:\").*(?=\";)", css).group()
+            path_map[name] = FontMapItem(paths=[info["name"]], font_family=font_family)
         elif info["type"] == "dir":
             result = process(info["path"])
-            path_map[name] = []
             for item in result:
                 if item.find("Mono") == -1:
-                    path_map[name].append(item)
+                    if name in path_map:
+                        path_map[name].paths.append(item)
+                    else:
+                        css = open(
+                            f"./result/{item}/result.css", "r", encoding="utf-8"
+                        ).read()
+                        font_family = re.search(
+                            r"(?<=font-family:\").*(?=\";)", css
+                        ).group()
+                        path_map[name] = FontMapItem(
+                            paths=[item], font_family=font_family
+                        )
                 elif f"{name} Mono" in path_map:
-                    path_map[f"{name} Mono"].append(item)
+                    path_map[f"{name} Mono"].paths.append(item)
                 else:
-                    path_map[f"{name} Mono"] = [item]
-    json.dump(path_map, open("./result/path_map.json", "w"), ensure_ascii=False)
+                    css = open(
+                        f"./result/{item}/result.css", "r", encoding="utf-8"
+                    ).read()
+                    font_family = re.search(
+                        r"(?<=font-family:\").*(?=\";)", css
+                    ).group()
+                    path_map[f"{name} Mono"] = FontMapItem(
+                        paths=[item], font_family=font_family
+                    )
+    json.dump(
+        path_map,
+        open("./result/path_map.json", "w"),
+        ensure_ascii=False,
+        cls=FontMapItemEncoder,
+    )
