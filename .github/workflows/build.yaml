@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/flake-checker-action@main
+
+      - name: Print flake metadata
+        run: nix flake metadata --accept-flake-config
+
+      - name: Build
+        run: |
+          NIXPKGS_ALLOW_UNFREE=1 nix build .# --accept-flake-config
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: result
+          path: |
+            result
