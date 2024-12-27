@@ -34,6 +34,9 @@ font_map = {
         "path": "./NeoXiHeiCode-Regular.ttf",
         "type": "file",
     },
+    "黑体": {"name": "sans", "type": "builtin"},
+    "宋体": {"name": "serif", "type": "builtin"},
+    "默认字体": {"name": "", "type": "builtin"},
 }
 
 
@@ -78,7 +81,9 @@ class FontMapItemEncoder(json.JSONEncoder):
 if __name__ == "__main__":
     path_map: dict[str, FontMapItem] = {}
     for name, info in font_map.items():
-        if info["type"] == "file":
+        if info["type"] == "builtin":
+            path_map[name] = FontMapItem(paths=[], font_family=info["name"])
+        elif info["type"] == "file":
             outdir = f'./result/{info["name"]}'
             os.system(
                 f'cn-font-split -i {info["path"]} --font-weight "{info["weight"] if "weight" in info else "400"}" --out-dir {outdir}'
