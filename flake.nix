@@ -100,6 +100,7 @@
             }:
             let
               index-html = ./index.html;
+              headers-file = ./_headers;
               build-python = ./build.py;
 
               source-han-serif-version = fonts-version.source-han-serif.version;
@@ -173,6 +174,7 @@
 
                 mkdir $out
                 install -Dm 644 ${index-html} $out/index.html
+                install -Dm 644 ${headers-file} $out/_headers
                 cp -r ./result/* $out
 
                 runHook postInstall
