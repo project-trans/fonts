@@ -34,6 +34,12 @@ font_map = {
         "path": "./NeoXiHeiCode-Regular.ttf",
         "type": "file",
     },
+    "寒蝉德黑体": {
+        "name": "ChillDINGothic",
+        "path": "./ChillDINGothicVF.ttf",
+        "type": "file",
+        "weight": "100 200 300 400 500 600 700 800 900",
+    },
     "黑体": {"name": "sans", "type": "builtin"},
     "宋体": {"name": "serif", "type": "builtin"},
     "默认字体": {"name": "", "type": "builtin"},
@@ -89,7 +95,7 @@ if __name__ == "__main__":
                 f'cn-font-split -i {info["path"]} --font-weight "{info["weight"] if "weight" in info else "400"}" --out-dir {outdir}'
             )
             css = open(f"{outdir}/result.css", "r", encoding="utf-8").read()
-            font_family = re.search(r"(?<=font-family:\").*(?=\";)", css).group()
+            font_family = re.search(r"(?<=font-family:\").*?(?=\";)", css).group()
             path_map[name] = FontMapItem(paths=[info["name"]], font_family=font_family)
         elif info["type"] == "dir":
             result = process(info["path"])
@@ -102,7 +108,7 @@ if __name__ == "__main__":
                             f"./result/{item}/result.css", "r", encoding="utf-8"
                         ).read()
                         font_family = re.search(
-                            r"(?<=font-family:\").*(?=\";)", css
+                            r"(?<=font-family:\").*?(?=\";)", css
                         ).group()
                         path_map[name] = FontMapItem(
                             paths=[item], font_family=font_family
@@ -114,7 +120,7 @@ if __name__ == "__main__":
                         f"./result/{item}/result.css", "r", encoding="utf-8"
                     ).read()
                     font_family = re.search(
-                        r"(?<=font-family:\").*(?=\";)", css
+                        r"(?<=font-family:\").*?(?=\";)", css
                     ).group()
                     path_map[f"{name} Mono"] = FontMapItem(
                         paths=[item], font_family=font_family

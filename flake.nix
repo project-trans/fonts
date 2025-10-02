@@ -55,6 +55,9 @@
           version = "1.501";
           version-in-nixpkgs = pkgs.lxgw-wenkai.version;
         };
+        chill-din-gothic = {
+          version = "1.300";
+        };
       };
 
       #nix eval --json .#check-version
@@ -136,6 +139,13 @@
                 hash = "sha256-Y5f1qqdbnG531c/WH+/cWUyrPHA+0ehaF3ycPERpsgM=";
               };
 
+              ChillDINGothic-version = fonts-version.chill-din-gothic.version;
+              ChillDINGothic = fetchzip {
+                url = "https://github.com/Warren2060/ChillDIN-ChillDINGothic/releases/download/ChillDINGothic_v${ChillDINGothic-version}/ChillDINGothic.v${ChillDINGothic-version}.zip";
+                hash = "sha256-LjcRhkAOVfSOKRTYGvNjiyvcx+MP3RgBbEttboWLmBU=";
+                stripRoot = false;
+              };
+
             in
             stdenvNoCC.mkDerivation {
               pname = "project-trans-fonts";
@@ -155,6 +165,7 @@
                 cp -v ${LxgwNeoXiHei} ./LXGWNeoXiHei.ttf
                 cp -rv ${LxgwWenkai}/lxgw-wenkai-v${LxgwWenkai-version} ./LXGWWenKai
                 cp -v ${NeoXiHei-Code} ./NeoXiHeiCode-Regular.ttf
+                cp -v "${ChillDINGothic}/ChillDINGothic v${ChillDINGothic-version}/ChillDINGothicVF.ttf" ./ChillDINGothicVF.ttf
 
                 runHook postUnpack
               '';
